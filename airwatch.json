@@ -1,0 +1,51 @@
+{
+  "stations": {
+    "pimpri-01": {
+      "name": "Pimpri Station 1",
+      "latitude": 18.6298,
+      "longitude": 73.7997,
+      "status": "active"
+    },
+    "chinchwad-01": {
+      "name": "Chinchwad Station",
+      "latitude": 18.6478,
+      "longitude": 73.8012,
+      "status": "active"
+    },
+    "nigdi-01": {
+      "name": "Nigdi Station",
+      "latitude": 18.6610,
+      "longitude": 73.7640,
+      "status": "active"
+    }
+  },
+  "readings": {
+    "pimpri-01": {
+      "timestamp": "2025-02-08T10:30:00Z",
+      "PM25": 95,
+      "PM10": 120,
+      "NO2": 0,
+      "SO2": 0,
+      "O3": 0,
+      "AQI": 152
+    },
+    "chinchwad-01": {
+      "timestamp": "2025-02-08T10:30:00Z",
+      "PM25": 95,
+      "PM10": 145,
+      "NO2": 0,
+      "SO2": 0,
+      "O3": 0,
+      "AQI": 168
+    },
+    "nigdi-01": {
+      "timestamp": "2025-02-08T10:30:00Z",
+      "PM25": 72,
+      "PM10": 98,
+      "NO2": 0,
+      "SO2": 0,
+      "O3": 0,
+      "AQI": 138
+    }
+  }
+}
