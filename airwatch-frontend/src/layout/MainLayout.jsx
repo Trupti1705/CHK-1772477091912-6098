@@ -127,10 +127,11 @@ function MainLayout() {
 const styles = {
     container: {
         display: "flex", flexDirection: "column",
-        height: "100vh", width: "100%",
+        height: "133.33vh", width: "100%",
         margin: 0, padding: 0, boxSizing: "border-box",
         backgroundColor: "#dcf7dc",
         fontFamily: "'Inter', 'Segoe UI', sans-serif",
+        zoom: '75%',   // 👈 add this line only
     },
     body: { display: "flex", flex: 1, overflow: "hidden" },
     loadingScreen: {
