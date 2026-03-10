@@ -7,7 +7,7 @@ export default function Header({ stations, selectedStation, onStationChange }) {
         if (aqi <= 100) return '#e4b547';
         if (aqi <= 150) return '#d44a31';
         if (aqi <= 200) return '#eb4040';
-        return '#ff0000';
+        return '#d10303';
     };
 
     const getAQILabel = (aqi) => {
