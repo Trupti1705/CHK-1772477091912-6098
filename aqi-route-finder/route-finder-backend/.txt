@@ -1,0 +1,123 @@
+//! ----------------- ROUTE API FULL RESPONSE-------------
+"routes": [
+      {
+        "summary": {
+          "distance": 6226.2,
+          "duration": 491.1
+        },
+        "segments": [
+          {
+            "distance": 6226.2,
+            "duration": 491.1,
+            "steps": [
+              {
+                "distance": 149.6,
+                "duration": 22,
+                "type": 11,
+                "instruction": "Head south",
+                "name": "-",
+                "way_points": [0, 4]
+              },
+              {
+                "distance": 336.8,
+                "duration": 26.9,
+                "type": 6,
+                "instruction": "Continue straight",
+                "name": "-",
+                "way_points": [4, 6]
+              },
+              {
+                "distance": 140.9,
+                "duration": 31.8,
+                "type": 0,
+                "instruction": "Turn left onto Bharatiya Vidyabhavan Marg",
+                "name": "Bharatiya Vidyabhavan Marg",
+                "way_points": [6, 11]
+              },
+              {
+                "distance": 1361.4,
+                "duration": 81.7,
+                "type": 1,
+                "instruction": "Turn right onto Senapati Bapat Marg",
+                "name": "Senapati Bapat Marg",
+                "way_points": [11, 29]
+              },
+              {
+                "distance": 1420.2,
+                "duration": 122.5,
+                "type": 7,
+                "instruction": "Enter the roundabout and take the 2nd exit onto Vishnushastri Chiplunkar Path",
+                "name": "Vishnushastri Chiplunkar Path",
+                "exit_number": 2,
+                "way_points": [29, 66]
+              },
+              {
+                "distance": 371.4,
+                "duration": 29.7,
+                "type": 1,
+                "instruction": "Turn right onto Karve Road, SH60",
+                "name": "Karve Road, SH60",
+                "way_points": [66, 76]
+              },
+              {
+                "distance": 306.6,
+                "duration": 22.1,
+                "type": 12,
+                "instruction": "Keep left onto Karve Road",
+                "name": "Karve Road",
+                "way_points": [76, 84]
+              },
+              {
+                "distance": 12.1,
+                "duration": 4.4,
+                "type": 1,
+                "instruction": "Turn right",
+                "name": "-",
+                "way_points": [84, 85]
+              },
+              {
+                "distance": 2127.2,
+                "duration": 150,
+                "type": 4,
+                "instruction": "Turn slight left onto Paud Road",
+                "name": "Paud Road",
+                "way_points": [85, 134]
+              },
+              {
+                "distance": 0,
+                "duration": 0,
+                "type": 10,
+                "instruction": "Arrive at Paud Road, straight ahead",
+                "name": "-",
+                "way_points": [134, 134]
+              }
+            ]
+          }
+        ],
+        "bbox": [73.807703, 18.505686, 73.830883, 18.535996],
+        "geometry": "_icpBgwraMLCZHFLjEd@~IP|FBBqA@s@@}@@o@?UfMTfA@~ENzBDbCFjGNzADrADlDJlBLzE|@zBXb@@LCZMNOTa@hAsE@IFGFAHBDFj@Lr@FjBFR@z@LbATt@Xz@^lCdAxAb@h@NnEnAXNx@HtAHh@@jA?~AGXA|AMXEnCa@bAWjBk@PGdA_@dAe@nB}@lB}@PIbCiAZOBDn@~AbB~DJ^?@Zn@Vt@`AfCHTHd@LFb@jAVr@Rf@d@nAZfAl@|BVdAQHSx@Sf@Q\\Y`@m@f@MJUHC@yErDo@f@uBbBwAlAqAjAy@x@]^m@t@k@jASp@Ij@?LA`@AJ?tABdCPjCLzAdA|If@dCTbATfBFz@Bj@NtGL`AFX\\bARZxAnBZj@Tl@Jf@Ff@JdBFl@X`AJTl@`Af@jAR~@",
+        "way_points": [0, 134]
+      }
+    ],
+    "metadata": {
+      "attribution": "openrouteservice.org | OpenStreetMap contributors",
+      "service": "routing",
+      "timestamp": 1771237718282,
+      "query": {
+        "coordinates": [
+          [73.8294, 18.5362],
+          [73.8077, 18.5074]
+        ],
+        "profile": "driving-car",
+        "profileName": "driving-car",
+        "format": "json"
+      },
+      "engine": {
+        "version": "9.5.0",
+        "build_date": "2025-10-31T12:33:09Z",
+        "graph_date": "2026-02-08T11:35:31Z",
+        "osm_date": "2026-02-02T00:59:59Z"
+      }
+    }
+  }
+}

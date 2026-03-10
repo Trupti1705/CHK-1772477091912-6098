@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+
+# Environment variables - NEVER COMMIT!
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+Save and close
+
+Step 3: Create Backend .gitignore
+powershellcd ..\route-finder-backend
+
+# Create .gitignore
+notepad .gitignore
+```
+
+**Paste this:**
+```
+# Dependencies
+node_modules/
+
+# Environment variables - NEVER COMMIT!
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
