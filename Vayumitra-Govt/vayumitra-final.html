@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VayuMitra — Citizen Pollution Reporting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a8c4e;
+    --green-light: #22c55e;
+    --green-pale: #dcfce7;
+    --green-mid: #bbf7d0;
+    --green-dark: #166534;
+    --red: #dc2626;
+    --orange: #ea580c;
+    --yellow: #ca8a04;
+    --bg: #f0fdf4;
+    --bg3: #f9fafb;
+    --border: #d1fae5;
+    --border2: #86efac;
+    --text: #14532d;
+    --muted: #4b7c5a;
+    --card: #ffffff;
+    --shadow: 0 1px 8px rgba(34,197,94,0.10);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 2px solid var(--border2);
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(34,197,94,0.08);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo span { color: var(--green-dark); }
+
+  .logo-tagline {
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    display: block;
+    margin-top: -4px;
+  }
+
+  .nav-tabs {
+    display: flex;
+    background: var(--green-pale);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+    border: 1px solid var(--border2);
+  }
+
+  .tab-btn {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--muted);
+  }
+
+  .tab-btn.active {
+    background: var(--green);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(26,140,78,0.25);
+  }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* CLIENT HERO */
+  .client-hero {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%);
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .client-hero::before { content:'🌿'; position:absolute; font-size:8rem; opacity:0.06; top:-1rem; left:2rem; }
+  .client-hero::after  { content:'🌱'; position:absolute; font-size:7rem; opacity:0.06; bottom:-1rem; right:2rem; }
+
+  .client-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    color: var(--green-dark);
+  }
+
+  .client-hero h1 em { font-style: normal; color: var(--green-light); }
+
+  .client-hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.6;
+  }
+
+  .uid-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    border: 1.5px solid var(--border2);
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    box-shadow: var(--shadow);
+  }
+
+  .uid-badge strong { color: var(--green); font-family: monospace; font-size: 0.9rem; }
+
+  /* FORM GRID */
+  .report-container {
+    max-width: 860px;
+    margin: 2rem auto;
+    padding: 0 1.5rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media(max-width: 640px) { .report-container { grid-template-columns: 1fr; } }
+
+  .form-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .form-card.full-width { grid-column: 1 / -1; }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--green);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .card-title .dot { width:6px; height:6px; border-radius:50%; background:var(--green-light); }
+
+  /* Map */
+  .map-placeholder {
+    background: var(--green-pale);
+    border-radius: 10px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .map-placeholder:hover { border-color: var(--green); }
+  .map-pin { font-size: 1.8rem; }
+
+  .map-coords {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--green);
+    background: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    display: none;
+    border: 1px solid var(--border2);
+  }
+
+  /* Fields */
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--green-dark);
+    margin-bottom: 0.3rem;
+    margin-top: 0.9rem;
+  }
+
+  label:first-of-type { margin-top: 0; }
+
+  input, textarea, select {
+    width: 100%;
+    background: #f9fefb;
+    border: 1.5px solid var(--border2);
+    border-radius: 8px;
+    padding: 0.65rem 0.9rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(26,140,78,0.1);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+  select option { background: #fff; }
+
+  /* Submit */
+  .submit-btn {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 14px rgba(26,140,78,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .submit-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+  .submit-btn:disabled { background: #a7f3d0; cursor: not-allowed; transform: none; }
+
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    background: #fff;
+    border: 1.5px solid var(--green-light);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    transform: translateY(120px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 999;
+    box-shadow: 0 8px 32px rgba(26,140,78,0.2);
+    max-width: 350px;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { border-color: var(--red); }
+
+  /* ADMIN HEADER */
+  .admin-header {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    padding: 2rem;
+    border-bottom: 2px solid var(--border2);
+  }
+
+  .admin-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .admin-header h1 { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--green-dark); }
+  .admin-header h1 em { font-style:normal; color:var(--green); }
+  .admin-header p { color:var(--muted); font-size:0.875rem; margin-top:0.25rem; }
+
+  .stats-bar { display:flex; gap:1rem; flex-wrap:wrap; }
+
+  .stat-chip {
+    background: #fff;
+    border: 1.5px solid var(--border2);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    min-width: 80px;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-chip .num { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; display:block; }
+  .stat-chip .lbl { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; }
+  .stat-chip.pending .num { color:var(--orange); }
+  .stat-chip.urgent  .num { color:var(--red); }
+  .stat-chip.rejected .num { color:#9ca3af; }
+  .stat-chip.total   .num { color:var(--green); }
+
+  /* KANBAN BOARD */
+  .admin-board {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1.5rem 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media(max-width: 700px) { .admin-board { grid-template-columns: 1fr; } }
+
+  .kanban-col {
+    background: var(--card);
+    border: 1.5px solid var(--border2);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .kanban-header {
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid var(--border);
+    background: white;
+  }
+
+  .kanban-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .col-dot { width:8px; height:8px; border-radius:50%; }
+  .pending-col  .col-dot { background: var(--orange); }
+  .urgent-col   .col-dot { background: var(--red); box-shadow: 0 0 8px rgba(220,38,38,0.5); }
+  .rejected-col .col-dot { background: #9ca3af; }
+
+  .col-count {
+    background: var(--green-pale);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    color: var(--green-dark);
+    font-weight: 600;
+  }
+
+  .kanban-body {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 300px;
+    background: var(--bg3);
+  }
+
+  /* REPORT CARDS */
+  .report-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .report-card::before {
+    content:''; position:absolute;
+    left:0; top:0; bottom:0;
+    width:3px; border-radius:3px 0 0 3px;
+  }
+
+  .pending-col  .report-card::before { background: var(--orange); }
+  .urgent-col   .report-card::before { background: var(--red); }
+  .rejected-col .report-card::before { background: #9ca3af; }
+
+  .report-card:hover { border-color:var(--border2); transform:translateY(-1px); box-shadow:0 4px 16px rgba(26,140,78,0.12); }
+
+  .rc-uid      { font-family:monospace; font-size:0.7rem; color:var(--green); margin-bottom:0.4rem; }
+  .rc-title    { font-weight:600; font-size:0.9rem; margin-bottom:0.3rem; color:var(--text); }
+  .rc-location { font-size:0.78rem; color:var(--muted); display:flex; align-items:center; gap:0.3rem; margin-bottom:0.5rem; }
+  .rc-meta     { display:flex; justify-content:space-between; align-items:center; }
+  .rc-time     { font-size:0.72rem; color:var(--muted); }
+
+  .severity-badge {
+    font-size: 0.68rem; font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .sev-pending  { background:rgba(234,88,12,0.12);  color:var(--orange); }
+  .sev-urgent   { background:rgba(220,38,38,0.12);  color:var(--red); }
+  .sev-rejected { background:rgba(156,163,175,0.12); color:#6b7280; }
+
+  .rc-actions { display:flex; gap:0.4rem; margin-top:0.75rem; }
+
+  .rc-btn {
+    flex: 1; padding: 0.35rem;
+    border-radius: 6px;
+    border: 1.5px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    font-size: 0.72rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+
+  .rc-btn:hover         { background:var(--green-pale); color:var(--text); }
+  .rc-btn.urgent-btn:hover  { border-color:var(--red);  color:var(--red);  background:rgba(220,38,38,0.08); }
+  .rc-btn.reject-btn:hover  { border-color:#9ca3af; color:#6b7280; background:rgba(156,163,175,0.1); }
+  .rc-btn.restore-btn:hover { border-color:var(--green); color:var(--green); background:var(--green-pale); }
+
+  @keyframes pulse-red {
+    0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.3); }
+    50%      { box-shadow: 0 0 0 6px rgba(220,38,38,0); }
+  }
+
+  .urgent-col .report-card { animation: pulse-red 3s ease-in-out infinite; }
+  .urgent-col .report-card:hover { animation: none; }
+
+  /* TOOLBAR */
+  .admin-toolbar {
+    max-width: 1100px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex:1; min-width:200px;
+    background:#fff; border:1.5px solid var(--border2);
+    border-radius:8px; padding:0.6rem 1rem;
+    color:var(--text); font-family:'DM Sans',sans-serif;
+    font-size:0.875rem; outline:none;
+  }
+
+  .search-input:focus { border-color:var(--green); }
+
+  .filter-select {
+    background:#fff; border:1.5px solid var(--border2);
+    border-radius:8px; padding:0.6rem 1rem;
+    color:var(--text); font-size:0.875rem;
+    cursor:pointer; outline:none; width:auto;
+  }
+
+  /* EMPTY STATE */
+  .empty-col {
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    height:200px; color:var(--muted);
+    font-size:0.8rem; gap:0.4rem; opacity:0.5;
+  }
+
+  .empty-icon { font-size:2rem; }
+
+  /* MODAL */
+  .modal-overlay {
+    position:fixed; inset:0;
+    background:rgba(0,50,20,0.4);
+    z-index:200; display:none;
+    align-items:center; justify-content:center;
+    padding:1rem; backdrop-filter:blur(4px);
+  }
+
+  .modal-overlay.open { display:flex; }
+
+  .modal {
+    background:#fff; border:1.5px solid var(--border2);
+    border-radius:16px; max-width:500px; width:100%;
+    padding:2rem; max-height:90vh; overflow-y:auto;
+    animation:modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow:0 20px 60px rgba(26,140,78,0.15);
+  }
+
+  @keyframes modalIn {
+    from { transform:scale(0.9) translateY(20px); opacity:0; }
+    to   { transform:scale(1) translateY(0); opacity:1; }
+  }
+
+  .modal-close {
+    float:right; background:var(--green-pale);
+    border:1.5px solid var(--border2); color:var(--green-dark);
+    border-radius:6px; padding:0.3rem 0.7rem;
+    cursor:pointer; font-size:1rem;
+  }
+
+  .modal h2 { font-family:'Syne',sans-serif; font-size:1.2rem; margin-bottom:1rem; color:var(--green-dark); }
+  .modal-detail { display:flex; flex-direction:column; gap:0.6rem; }
+  .detail-row   { display:flex; gap:0.75rem; align-items:flex-start; font-size:0.875rem; }
+  .detail-label { color:var(--muted); min-width:110px; font-size:0.8rem; }
+  .detail-value { color:var(--text); flex:1; line-height:1.5; }
+
+  /* ADMIN LOCK SCREEN */
+  .admin-lock {
+    max-width: 420px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+    text-align: center;
+  }
+
+  .lock-card {
+    background:#fff; border:1.5px solid var(--border2);
+    border-radius:16px; padding:2.5rem 2rem;
+    box-shadow: 0 8px 32px rgba(26,140,78,0.12);
+  }
+
+  .lock-icon { font-size:3rem; margin-bottom:1rem; display:block; }
+  .lock-card h2 { font-family:'Syne',sans-serif; font-size:1.4rem; margin-bottom:0.4rem; color:var(--green-dark); }
+  .lock-card p  { color:var(--muted); font-size:0.85rem; margin-bottom:1.5rem; }
+
+  .login-btn {
+    width:100%; padding:0.85rem;
+    background:var(--green); color:#fff; border:none;
+    border-radius:10px; font-family:'Syne',sans-serif;
+    font-size:1rem; font-weight:700; cursor:pointer;
+    transition:all 0.2s; margin-top:0.75rem;
+    box-shadow:0 4px 14px rgba(26,140,78,0.3);
+    display:flex; align-items:center; justify-content:center; gap:0.5rem;
+  }
+
+  .login-btn:hover { background:var(--green-dark); transform:translateY(-1px); }
+  .login-btn:disabled { background:#a7f3d0; cursor:not-allowed; transform:none; }
+
+  .error-msg { color:var(--red); font-size:0.8rem; margin-top:0.5rem; display:none; }
+
+  .admin-content { display:none; }
+  .admin-content.unlocked { display:block; }
+
+  /* LIVE BADGE */
+  .live-badge {
+    display:inline-flex; align-items:center; gap:0.4rem;
+    background:#fff; border:1px solid var(--border2);
+    border-radius:999px; padding:0.25rem 0.75rem;
+    font-size:0.72rem; color:var(--green); font-weight:600;
+    box-shadow:var(--shadow);
+  }
+
+  .live-dot {
+    width:7px; height:7px; background:var(--green-light);
+    border-radius:50%; animation: livePulse 1.5s infinite;
+  }
+
+  @keyframes livePulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(34,197,94,0.5); }
+    50%      { box-shadow:0 0 0 5px rgba(34,197,94,0); }
+  }
+
+  .signout-btn {
+    background:transparent; border:1px solid var(--border2);
+    color:var(--muted); padding:0.3rem 0.9rem;
+    border-radius:6px; cursor:pointer; font-size:0.8rem;
+    transition:all 0.2s;
+  }
+
+  .signout-btn:hover { background:var(--green-pale); color:var(--green-dark); }
+
+
+  /* Upload Zone */
+  .upload-zone {
+    border: 2px dashed var(--border2);
+    border-radius: 10px;
+    padding: 2rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    background: var(--green-pale);
+  }
+
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--green);
+    background: var(--green-mid);
+  }
+
+  .upload-zone input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+
+  .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
+  .upload-zone p { color: var(--muted); font-size: 0.875rem; line-height: 1.5; }
+  .upload-zone p strong { color: var(--green); }
+
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div>
+      🌿 Vayu<span>Mitra</span>
+      <span class="logo-tagline">वायु मित्र — Friend of Clean Air</span>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('client', event)">📱 Citizen Report</button>
+    <button class="tab-btn"        onclick="switchTab('admin',  event)">🏛️ Gov. Dashboard</button>
+  </div>
+</nav>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast">
+  <span id="toast-icon">✅</span>
+  <div>
+    <strong id="toast-title" style="color:var(--green-dark)">Done!</strong><br>
+    <small id="toast-msg" style="color:var(--muted)"></small>
+  </div>
+</div>
+
+<!-- ===================== CITIZEN VIEW ===================== -->
+<div class="view active" id="view-client">
+  <div class="client-hero">
+    <h1>Spot Pollution?<br><em>Report It Instantly.</em></h1>
+    <p>Upload a photo, share your location, and alert government authorities in seconds. Together we protect our air.</p>
+    <div class="uid-badge">
+      🪪 Your Citizen ID: <strong id="client-uid">—</strong>
+    </div>
+  </div>
+
+  <div class="report-container">
+
+    <!-- Photo Upload -->
+    <div class="form-card full-width">
+      <div class="card-title"><span class="dot"></span> Upload Photo Evidence</div>
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="photo-input" accept="image/*">
+        <span class="upload-icon">📷</span>
+        <p>Drag &amp; drop or <strong>click to browse</strong><br>JPG, PNG, HEIC accepted</p>
+      </div>
+      <img id="preview-img" alt="Photo Preview"
+        style="width:100%;border-radius:10px;display:none;max-height:260px;object-fit:cover;margin-top:1rem;border:1.5px solid var(--border2);">
+      <p id="photo-note" style="display:none;margin-top:0.5rem;font-size:0.78rem;color:var(--muted);">
+        ✅ Photo selected and ready to submit!
+      </p>
+    </div>
+
+    <!-- Pollution Info -->
+    <div class="form-card">
+      <div class="card-title"><span class="dot"></span> Pollution Details</div>
+
+      <label>Pollution Source</label>
+      <select id="pollution-type">
+        <option value="">— Select what you saw —</option>
+        <option>Factory / Industrial Smoke</option>
+        <option>Vehicle Exhaust / Traffic</option>
+        <option>Open Burning / Waste Fire</option>
+        <option>Construction Dust</option>
+        <option>Chemical / Foul Odour</option>
+        <option>Illegal Dumping</option>
+        <option>Other</option>
+      </select>
+
+      <label>Describe What You Observed</label>
+      <textarea id="description" placeholder="e.g. Black smoke from factory chimney since morning, strong smell, people coughing nearby..."></textarea>
+
+      <label>Estimated Time of Incident</label>
+      <input type="datetime-local" id="incident-time">
+
+      <label>Is this recurring?</label>
+      <select id="recurring">
+        <option value="first">First time I'm seeing this</option>
+        <option value="occasional">Happens occasionally</option>
+        <option value="daily">Happens daily / regularly</option>
+      </select>
+    </div>
+
+    <!-- Location -->
+    <div class="form-card">
+      <div class="card-title"><span class="dot"></span> Location</div>
+
+      <div class="map-placeholder" id="map-box" onclick="detectGPS()">
+        <span class="map-pin">📍</span>
+        <span id="map-text">Click to auto-detect your GPS location</span>
+        <span class="map-coords" id="map-coords"></span>
+      </div>
+
+      <label>Full Address / Landmark</label>
+      <input type="text" id="address" placeholder="e.g. Near XYZ Factory, MG Road">
+
+      <label>City</label>
+      <input type="text" id="city" placeholder="e.g. Mumbai">
+
+      <label>State</label>
+      <input type="text" id="state" placeholder="e.g. Maharashtra">
+
+      <label>PIN Code</label>
+      <input type="text" id="pincode" placeholder="e.g. 400001" maxlength="6">
+    </div>
+
+    <!-- Personal Details -->
+    <div class="form-card">
+      <div class="card-title"><span class="dot"></span> Your Details</div>
+
+      <label>Full Name</label>
+      <input type="text" id="reporter-name" placeholder="Your full name">
+
+      <label>Mobile Number</label>
+      <input type="tel" id="reporter-phone" placeholder="+91 XXXXX XXXXX">
+
+      <label>Email (Optional)</label>
+      <input type="email" id="reporter-email" placeholder="you@example.com">
+
+      <label>Aadhar Number (Optional)</label>
+      <input type="text" id="reporter-aadhar" placeholder="For verified reporting">
+    </div>
+
+    <!-- Submit -->
+    <div class="form-card">
+      <div class="card-title"><span class="dot"></span> Submit Your Report</div>
+      <p style="color:var(--muted);font-size:0.85rem;line-height:1.6;margin-bottom:1rem;">
+        Your report will be sent directly to the government pollution control board. 
+        An officer will review and take action. Your Citizen ID tracks your report status.
+      </p>
+      <div style="background:var(--green-pale);border:1px solid var(--border2);border-radius:8px;padding:0.75rem 1rem;font-size:0.82rem;color:var(--green-dark);margin-bottom:1rem;">
+        ℹ️ Severity level will be assigned by the government officer — not by you.
+      </div>
+      <button class="submit-btn" id="submit-btn" onclick="submitReport()">
+        <div class="spinner" id="submit-spinner"></div>
+        <span id="submit-text">⚡ Submit Report to Authorities</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== ADMIN VIEW ===================== -->
+<div class="view" id="view-admin">
+
+  <!-- Lock Screen -->
+  <div class="admin-lock" id="admin-lock">
+    <div class="lock-card">
+      <span class="lock-icon">🔐</span>
+      <h2>Government Portal</h2>
+      <p>Restricted to authorized Pollution Control Board officials only.</p>
+
+      <label>Official Email</label>
+      <input type="email" id="admin-email" placeholder="admin@vayumitra.gov.in"
+             onkeydown="if(event.key==='Enter') adminLogin()">
+
+      <label>Password</label>
+      <input type="password" id="admin-pwd" placeholder="Enter your password"
+             onkeydown="if(event.key==='Enter') adminLogin()">
+
+      <div class="error-msg" id="login-error"></div>
+
+      <button class="login-btn" id="login-btn" onclick="adminLogin()">
+        <div class="spinner" id="login-spinner"></div>
+        <span id="login-text">🔓 Access Dashboard</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard (shown after login) -->
+  <div class="admin-content" id="admin-content">
+
+    <div class="admin-header">
+      <div class="admin-top">
+        <div>
+          <h1>🏛️ <em>VayuMitra</em> — Pollution Control Board</h1>
+          <p>Real-time citizen reports &nbsp;·&nbsp;
+            <span class="live-badge"><span class="live-dot"></span> Connected to Firebase</span>
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.75rem;">
+          <div class="stats-bar">
+            <div class="stat-chip total">   <span class="num" id="stat-total">0</span>   <span class="lbl">Total</span></div>
+            <div class="stat-chip pending"> <span class="num" id="stat-pending">0</span> <span class="lbl">Pending</span></div>
+            <div class="stat-chip urgent">  <span class="num" id="stat-urgent">0</span>  <span class="lbl">Urgent</span></div>
+            <div class="stat-chip rejected"><span class="num" id="stat-rejected">0</span><span class="lbl">Rejected</span></div>
+          </div>
+          <button class="signout-btn" onclick="adminLogout()">🚪 Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-toolbar">
+      <input class="search-input" type="text" id="search-bar"
+             placeholder="🔍  Search by name, location, UID..."
+             oninput="renderBoard()">
+      <select class="filter-select" id="status-filter" onchange="renderBoard()">
+        <option value="">All Reports</option>
+        <option value="pending">Pending</option>
+        <option value="urgent">Urgent</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+
+    <div class="admin-board">
+      <div class="kanban-col pending-col">
+        <div class="kanban-header">
+          <div class="kanban-title"><span class="col-dot"></span> Pending</div>
+          <span class="col-count" id="cnt-pending">0</span>
+        </div>
+        <div class="kanban-body" id="body-pending"></div>
+      </div>
+
+      <div class="kanban-col urgent-col">
+        <div class="kanban-header">
+          <div class="kanban-title"><span class="col-dot"></span> Urgent</div>
+          <span class="col-count" id="cnt-urgent">0</span>
+        </div>
+        <div class="kanban-body" id="body-urgent"></div>
+      </div>
+
+      <div class="kanban-col rejected-col">
+        <div class="kanban-header">
+          <div class="kanban-title"><span class="col-dot"></span> Rejected</div>
+          <span class="col-count" id="cnt-rejected">0</span>
+        </div>
+        <div class="kanban-body" id="body-rejected"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕ Close</button>
+    <h2 id="modal-title">Report Details</h2>
+    <div class="modal-detail" id="modal-detail"></div>
+  </div>
+</div>
+
+<!-- ===================== FIREBASE SCRIPT ===================== -->
+<script type="module">
+
+  // ── Firebase imports ──────────────────────────────────────────
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  import {
+    getFirestore, collection, addDoc,
+    onSnapshot, doc, updateDoc,
+    serverTimestamp, query, orderBy
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // ── Your Firebase Config ──────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyB1YpukI2RVBFIyEEUWE6g9JxyN1r4NqSY",
+    authDomain:        "vayumitra-175e3.firebaseapp.com",
+    projectId:         "vayumitra-175e3",
+    storageBucket:     "vayumitra-175e3.firebasestorage.app",
+    messagingSenderId: "331021813045",
+    appId:             "1:331021813045:web:5fed113ac848a0dbe5787c"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+
+
+  // ── Photo Upload (local preview only, not stored in Firebase) ──
+  let photoDataUrl = null;
+
+  const photoInput = document.getElementById('photo-input');
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      photoDataUrl = e.target.result;
+      const img = document.getElementById('preview-img');
+      img.src = photoDataUrl;
+      img.style.display = 'block';
+      document.getElementById('photo-note').style.display = 'block';
+      document.getElementById('upload-zone').style.borderColor = 'var(--green)';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  const uploadZone = document.getElementById('upload-zone');
+  uploadZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    uploadZone.classList.add('drag-over');
+  });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      photoInput.files = e.dataTransfer.files;
+      photoInput.dispatchEvent(new Event('change'));
+    }
+  });
+
+  // ── App State ─────────────────────────────────────────────────
+  let reports          = [];
+  let adminLoggedIn    = false;
+  let detectedLocation = null;
+  let unsubscribe      = null;
+
+  // Citizen UID — saved in browser so same person keeps same ID
+  let clientUID = localStorage.getItem('vayumitraUID');
+  if (!clientUID) {
+    clientUID = 'CIT-' + Math.random().toString(36).substring(2,8).toUpperCase();
+    localStorage.setItem('vayumitraUID', clientUID);
+  }
+  document.getElementById('client-uid').textContent = clientUID;
+
+  // ── Tab Switching ─────────────────────────────────────────────
+  window.switchTab = function(tab, e) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('view-' + tab).classList.add('active');
+    if (e?.target) e.target.classList.add('active');
+  };
+
+  // ── GPS Detection ─────────────────────────────────────────────
+  window.detectGPS = function() {
+    const mapText = document.getElementById('map-text');
+    mapText.textContent = '📡 Detecting your location...';
+
+    if (!navigator.geolocation) {
+      mapText.textContent = '❌ Geolocation not supported by your browser.';
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        detectedLocation = {
+          lat: pos.coords.latitude.toFixed(5),
+          lng: pos.coords.longitude.toFixed(5)
+        };
+        const coordsEl = document.getElementById('map-coords');
+        coordsEl.style.display = 'inline-block';
+        coordsEl.textContent   = `${detectedLocation.lat}°N, ${detectedLocation.lng}°E`;
+        mapText.textContent    = '✅ Location detected successfully!';
+        document.getElementById('map-box').style.borderColor = 'var(--green)';
+      },
+      () => {
+        mapText.textContent = '❌ Could not detect. Please enter address manually.';
+      }
+    );
+  };
+
+  // ── Submit Report → Save to Firestore ────────────────────────
+  window.submitReport = async function() {
+    const type    = document.getElementById('pollution-type').value;
+    const address = document.getElementById('address').value.trim();
+    const name    = document.getElementById('reporter-name').value.trim();
+    const phone   = document.getElementById('reporter-phone').value.trim();
+
+    // Validation
+    if (!type) {
+      showToast('⚠️', 'Select Pollution Type', 'Please choose what type of pollution you observed.', true);
+      return;
+    }
+    if (!address) {
+      showToast('⚠️', 'Address Required', 'Please enter the location address.', true);
+      return;
+    }
+    if (!name) {
+      showToast('⚠️', 'Name Required', 'Please enter your full name.', true);
+      return;
+    }
+    if (!phone) {
+      showToast('⚠️', 'Phone Required', 'Please enter your mobile number.', true);
+      return;
+    }
+
+    // Show loading
+    setSubmitLoading(true);
+
+    try {
+      // Save to Firestore
+      const docRef = await addDoc(collection(db, 'reports'), {
+        uid:          clientUID,
+        status:       'pending',
+        pollutionType: type,
+        description:  document.getElementById('description').value.trim(),
+        incidentTime: document.getElementById('incident-time').value,
+        recurring:    document.getElementById('recurring').value,
+        address:      address,
+        city:         document.getElementById('city').value.trim(),
+        state:        document.getElementById('state').value.trim(),
+        pincode:      document.getElementById('pincode').value.trim(),
+        reporterName: name,
+        phone:        phone,
+        email:        document.getElementById('reporter-email').value.trim(),
+        aadhar:       document.getElementById('reporter-aadhar').value.trim(),
+        coords:       detectedLocation,
+        timestamp:    serverTimestamp()
+      });
+
+      showToast('✅', 'Report Submitted!',
+        `Report ID: ${docRef.id.substring(0,8).toUpperCase()} · Your UID: ${clientUID}`, false);
+
+      resetForm();
+
+    } catch (err) {
+      console.error(err);
+      showToast('❌', 'Submission Failed', err.message, true);
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  function setSubmitLoading(on) {
+    document.getElementById('submit-btn').disabled     = on;
+    document.getElementById('submit-spinner').style.display = on ? 'block' : 'none';
+    document.getElementById('submit-text').textContent = on ? 'Submitting...' : '⚡ Submit Report to Authorities';
+  }
+
+  function resetForm() {
+    ['pollution-type','description','incident-time','address','city',
+     'state','pincode','reporter-name','reporter-phone',
+     'reporter-email','reporter-aadhar'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('recurring').value  = 'first';
+    photoDataUrl = null;
+    document.getElementById('preview-img').style.display = 'none';
+    document.getElementById('preview-img').src = '';
+    document.getElementById('photo-note').style.display = 'none';
+    document.getElementById('upload-zone').style.borderColor = '';
+    photoInput.value = '';
+    document.getElementById('map-text').textContent   = 'Click to auto-detect your GPS location';
+    document.getElementById('map-coords').style.display = 'none';
+    document.getElementById('map-box').style.borderColor = '';
+    detectedLocation = null;
+  }
+
+  // ── Admin Login → Firebase Auth ───────────────────────────────
+  window.adminLogin = async function() {
+    const email = document.getElementById('admin-email').value.trim();
+    const pwd   = document.getElementById('admin-pwd').value;
+    const errEl = document.getElementById('login-error');
+
+    errEl.style.display = 'none';
+
+    if (!email || !pwd) {
+      errEl.textContent    = '⚠️ Please enter both email and password.';
+      errEl.style.display  = 'block';
+      return;
+    }
+
+    setLoginLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, pwd);
+      // onAuthStateChanged will handle unlocking the dashboard
+    } catch (err) {
+      errEl.textContent   = '❌ ' + (err.code === 'auth/invalid-credential'
+        ? 'Wrong email or password. Try again.'
+        : err.message);
+      errEl.style.display = 'block';
+      document.getElementById('admin-pwd').style.borderColor = 'var(--red)';
+      setTimeout(() => {
+        document.getElementById('admin-pwd').style.borderColor = '';
+      }, 2000);
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  function setLoginLoading(on) {
+    document.getElementById('login-btn').disabled           = on;
+    document.getElementById('login-spinner').style.display  = on ? 'block' : 'none';
+    document.getElementById('login-text').textContent       = on ? 'Signing in...' : '🔓 Access Dashboard';
+  }
+
+  // ── Admin Logout ──────────────────────────────────────────────
+  window.adminLogout = async function() {
+    await signOut(auth);
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    adminLoggedIn = false;
+    reports       = [];
+    document.getElementById('admin-lock').style.display = '';
+    document.getElementById('admin-content').classList.remove('unlocked');
+    document.getElementById('admin-email').value = '';
+    document.getElementById('admin-pwd').value   = '';
+    document.getElementById('login-error').style.display = 'none';
+  };
+
+  // ── Auth State — auto-unlock if already logged in ─────────────
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      adminLoggedIn = true;
+      document.getElementById('admin-lock').style.display = 'none';
+      document.getElementById('admin-content').classList.add('unlocked');
+      startRealtimeListener();
+    } else {
+      adminLoggedIn = false;
+    }
+  });
+
+  // ── Realtime Listener → auto-updates dashboard ────────────────
+  function startRealtimeListener() {
+    if (unsubscribe) unsubscribe();
+
+    const q = query(
+      collection(db, 'reports'),
+      orderBy('timestamp', 'desc')
+    );
+
+    unsubscribe = onSnapshot(q,
+      snapshot => {
+        reports = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderBoard();
+      },
+      err => {
+        console.error(err);
+        showToast('❌', 'Database Error', err.message, true);
+      }
+    );
+  }
+
+  // ── Render Kanban Board ───────────────────────────────────────
+  window.renderBoard = function() {
+    if (!adminLoggedIn) return;
+
+    const search       = document.getElementById('search-bar').value.toLowerCase();
+    const statusFilter = document.getElementById('status-filter').value;
+
+    const filtered = reports.filter(r => {
+      const matchSearch =
+        !search ||
+        (r.uid          || '').toLowerCase().includes(search) ||
+        (r.reporterName || '').toLowerCase().includes(search) ||
+        (r.address      || '').toLowerCase().includes(search) ||
+        (r.city         || '').toLowerCase().includes(search) ||
+        (r.pollutionType|| '').toLowerCase().includes(search);
+      const matchStatus = !statusFilter || r.status === statusFilter;
+      return matchSearch && matchStatus;
+    });
+
+    const pending  = filtered.filter(r => r.status === 'pending');
+    const urgent   = filtered.filter(r => r.status === 'urgent');
+    const rejected = filtered.filter(r => r.status === 'rejected');
+
+    // Update stats
+    document.getElementById('stat-total').textContent    = reports.length;
+    document.getElementById('stat-pending').textContent  = reports.filter(r => r.status === 'pending').length;
+    document.getElementById('stat-urgent').textContent   = reports.filter(r => r.status === 'urgent').length;
+    document.getElementById('stat-rejected').textContent = reports.filter(r => r.status === 'rejected').length;
+
+    document.getElementById('cnt-pending').textContent   = pending.length;
+    document.getElementById('cnt-urgent').textContent    = urgent.length;
+    document.getElementById('cnt-rejected').textContent  = rejected.length;
+
+    renderColumn('body-pending',  pending,  false, true,  false);
+    renderColumn('body-urgent',   urgent,   true,  false, false);
+    renderColumn('body-rejected', rejected, false, false, true);
+  };
+
+  function renderColumn(bodyId, items, isUrgent, canMarkUrgent, isRejected) {
+    const body = document.getElementById(bodyId);
+
+    if (items.length === 0) {
+      body.innerHTML = `
+        <div class="empty-col">
+          <span class="empty-icon">${isRejected ? '🚫' : isUrgent ? '✅' : '📭'}</span>
+          <span>${isUrgent ? 'No urgent cases right now' : isRejected ? 'No rejections' : 'No pending reports'}</span>
+        </div>`;
+      return;
+    }
+
+    body.innerHTML = items.map((r, index) => {
+      // Human-readable report number based on timestamp order
+      const reportNum  = 'RPT-' + String(index + 1).padStart(3, '0');
+      const reportDate = r.timestamp?.toDate
+        ? r.timestamp.toDate().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })
+        : 'Date unknown';
+      const reportTime = r.timestamp?.toDate
+        ? r.timestamp.toDate().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' })
+        : '';
+
+      return `
+      <div class="report-card" onclick="openModal('${r.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+          <div class="rc-uid">📋 ${reportNum}</div>
+          <span class="severity-badge sev-${r.status}">${(r.status || 'pending').toUpperCase()}</span>
+        </div>
+        <div class="rc-title">🏭 ${r.pollutionType || '—'}</div>
+        <div class="rc-location">📍 ${r.address || '—'}${r.city ? ', ' + r.city : ''}</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.3rem;">
+          👤 ${r.reporterName || 'Anonymous'} &nbsp;·&nbsp; 📞 ${r.phone || '—'}
+        </div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem;">
+          🕐 ${reportDate}${reportTime ? ' at ' + reportTime : ''} &nbsp;·&nbsp; 🪪 ${r.uid || '—'}
+        </div>
+        <div class="rc-actions" onclick="event.stopPropagation()">
+          ${canMarkUrgent ? `<button class="rc-btn urgent-btn"  onclick="changeStatus('${r.id}','urgent')">🚨 Mark Urgent</button>` : ''}
+          ${!isRejected   ? `<button class="rc-btn reject-btn"  onclick="changeStatus('${r.id}','rejected')">✕ Reject</button>` : ''}
+          ${isRejected    ? `<button class="rc-btn restore-btn" onclick="changeStatus('${r.id}','pending')">↩ Restore</button>` : ''}
+          ${isUrgent      ? `<button class="rc-btn"             onclick="changeStatus('${r.id}','pending')">↩ Move to Pending</button>` : ''}
+        </div>
+      </div>
+    `}).join('');
+  }
+
+  // ── Change Report Status → Firestore update ───────────────────
+  window.changeStatus = async function(id, newStatus) {
+    try {
+      await updateDoc(doc(db, 'reports', id), { status: newStatus });
+      // onSnapshot auto-refreshes the board instantly
+    } catch (err) {
+      showToast('❌', 'Update Failed', err.message, true);
+    }
+  };
+
+  // ── Open Detail Modal ─────────────────────────────────────────
+  window.openModal = function(id) {
+    const r = reports.find(r => r.id === id);
+    if (!r) return;
+
+    document.getElementById('modal-title').textContent = r.pollutionType || 'Report Details';
+
+    const ts = r.timestamp?.toDate
+      ? r.timestamp.toDate().toLocaleString('en-IN')
+      : '—';
+
+    document.getElementById('modal-detail').innerHTML = `
+      <div class="detail-row"><span class="detail-label">Report ID</span>    <span class="detail-value" style="font-family:monospace;color:var(--green)">${r.id}</span></div>
+      <div class="detail-row"><span class="detail-label">Citizen UID</span>  <span class="detail-value" style="font-family:monospace">${r.uid || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span>       <span class="detail-value"><span class="severity-badge sev-${r.status}">${(r.status||'').toUpperCase()}</span></span></div>
+      <div class="detail-row"><span class="detail-label">Source</span>       <span class="detail-value">${r.pollutionType || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Location</span>     <span class="detail-value">${[r.address, r.city, r.state, r.pincode].filter(Boolean).join(', ')}</span></div>
+      ${r.coords ? `<div class="detail-row"><span class="detail-label">GPS Coords</span> <span class="detail-value" style="font-family:monospace">${r.coords.lat}°N, ${r.coords.lng}°E</span></div>` : ''}
+      <div class="detail-row"><span class="detail-label">Reporter</span>     <span class="detail-value">${r.reporterName || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Phone</span>        <span class="detail-value">${r.phone || '—'}</span></div>
+      ${r.email  ? `<div class="detail-row"><span class="detail-label">Email</span>   <span class="detail-value">${r.email}</span></div>` : ''}
+      ${r.aadhar ? `<div class="detail-row"><span class="detail-label">Aadhar</span> <span class="detail-value">${r.aadhar}</span></div>` : ''}
+      <div class="detail-row"><span class="detail-label">Recurring</span>    <span class="detail-value">${r.recurring || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted At</span> <span class="detail-value">${ts}</span></div>
+      ${r.description ? `<div class="detail-row"><span class="detail-label">Description</span><span class="detail-value">${r.description}</span></div>` : ''}
+    `;
+
+    document.getElementById('modal').classList.add('open');
+  };
+
+  window.closeModal = function(e) {
+    if (e.target === document.getElementById('modal')) {
+      document.getElementById('modal').classList.remove('open');
+    }
+  };
+
+  // ── Helpers ───────────────────────────────────────────────────
+  function timeAgo(ts) {
+    if (!ts) return '—';
+    const date = ts?.toDate ? ts.toDate() : new Date(ts);
+    const diff = (Date.now() - date.getTime()) / 1000;
+    if (diff < 60)    return 'Just now';
+    if (diff < 3600)  return Math.floor(diff / 60)   + ' min ago';
+    if (diff < 86400) return Math.floor(diff / 3600)  + ' hrs ago';
+    return                   Math.floor(diff / 86400) + ' days ago';
+  }
+
+  function showToast(icon, title, msg, isError) {
+    document.getElementById('toast-icon').textContent  = icon;
+    document.getElementById('toast-title').textContent = title;
+    document.getElementById('toast-msg').textContent   = msg;
+    const toast = document.getElementById('toast');
+    toast.classList.toggle('error', isError);
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 5000);
+  }
+
+</script>
+</body>
+</html>
