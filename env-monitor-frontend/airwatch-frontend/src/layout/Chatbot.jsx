@@ -405,7 +405,7 @@ User: ${userMessage}`;
                                 fontSize: '17px', cursor: 'pointer', display: 'flex',
                                 alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                                 transition: 'all 0.2s ease', opacity: (!inputMessage.trim() || isLoading) ? 0.45 : 1
-                            }}>➤</button>
+                            }}>➤ </button>
                     </div>
                 </div>
             )}
