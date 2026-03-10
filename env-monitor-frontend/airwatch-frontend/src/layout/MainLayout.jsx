@@ -131,7 +131,7 @@ const styles = {
         margin: 0, padding: 0, boxSizing: "border-box",
         backgroundColor: "#dcf7dc",
         fontFamily: "'Inter', 'Segoe UI', sans-serif",
-        zoom: '75%',   // 👈 add this line only
+        zoom: '75%',
     },
     body: { display: "flex", flex: 1, overflow: "hidden" },
     loadingScreen: {
