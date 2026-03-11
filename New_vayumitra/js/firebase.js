@@ -21,9 +21,9 @@ import {
   setReports, setAdminLoggedIn, setUnsubscribe,
   showToast, resetForm,
   reports, adminLoggedIn, unsubscribe
-} from './js/app.js';
+} from './app.js';
 
-import { showShareSection } from './share.js';
+import { showShareSection } from '../share.js';
 
 // ── Firebase Config ───────────────────────────────────────────
 const firebaseConfig = {
