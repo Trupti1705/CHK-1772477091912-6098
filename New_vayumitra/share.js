@@ -15,15 +15,16 @@ export function formatShareMessage(reportId, pollutionType, address, city, uid) 
   const reportUrl = window.location.href;
 
   return (
-    `🌿 *VayuMitra — Pollution Report Filed*\n\n` +
-    `🏭 *Type:* ${pollutionType}\n` +
-    `📍 *Location:* ${location}\n` +
-    `📋 *Report ID:* ${shortId}\n` +
-    `🪪 *Citizen UID:* ${uid}\n\n` +
-    `⚠️ A pollution violation has been reported to the authorities. ` +
-    `If you witness this too, report it at VayuMitra to take action.\n\n` +
-    `🔗 Report pollution: ${reportUrl}\n` +
-    `_Together we protect our air 🇮🇳_`
+    `🚨 POLLUTION ALERT — VayuMitra\n` +
+    `─────────────────────────────\n\n` +
+    `Type: ${pollutionType}\n` +
+    `Location: ${location}\n` +
+    `Report ID: ${shortId}\n` +
+    `Filed by Citizen: ${uid}\n\n` +
+    `This violation has been reported to the Pollution Control Board and is under review.\n\n` +
+    `If you witnessed this incident, file your report at:\n` +
+    `${reportUrl}\n\n` +
+    `— VayuMitra Pollution Control System`
   );
 }
 
