@@ -21,7 +21,7 @@ import {
   setReports, setAdminLoggedIn, setUnsubscribe,
   showToast, resetForm,
   reports, adminLoggedIn, unsubscribe
-} from './app.js';
+} from './js/app.js';
 
 import { showShareSection } from './share.js';
 
