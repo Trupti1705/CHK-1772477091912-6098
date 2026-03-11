@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VayuMitra — Citizen Pollution Reporting</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/share.css">
+</head>
+<body>
+
+<!-- ── NAV ───────────────────────────────────────────────────── -->
+<nav>
+  <div class="logo">
+    <div>
+      🌿 Vayu<span>Mitra</span>
+      <span class="logo-tagline">वायु मित्र — Friend of Clean Air</span>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('client', event)">📱 Citizen Report</button>
+    <button class="tab-btn"        onclick="switchTab('admin',  event)">🏛️ Gov. Dashboard</button>
+  </div>
+</nav>
+
+<!-- ── TOAST NOTIFICATION ────────────────────────────────────── -->
+<div class="toast" id="toast">
+  <span id="toast-icon">✅</span>
+  <div>
+    <strong id="toast-title" style="color:var(--green-dark)">Done!</strong><br>
+    <small id="toast-msg" style="color:var(--muted)"></small>
+  </div>
+</div>
+
+<!-- ══════════════ CITIZEN VIEW ══════════════════════════════ -->
+<div class="view active" id="view-client">
+
+  <!-- Hero -->
+  <div class="client-hero">
+    <h1>Spot Pollution?<br><em>Report It Instantly.</em></h1>
+    <p>Upload a photo, share your location, and alert government authorities in seconds. Together we protect our air.</p>
+    <div class="uid-badge">
+      🪪 Your Citizen ID: <strong id="client-uid">—</strong>
+    </div>
+  </div>
+
+  <!-- Report Form Grid -->
+  <div class="report-container">
+
+    <!-- Photo Upload -->
+    <div class="form-card full-width">
+      <div class="card-title"><span class="dot"></span> Upload Photo Evidence</div>
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="photo-input" accept="image/*">
+        <span class="upload-icon">📷</span>
+        <p>Drag &amp; drop or <strong>click to browse</strong><br>JPG, PNG, HEIC accepted</p>
+      </div>
+      <img id="preview-img" alt="Photo Preview"
+        style="width:100%;border-radius:10px;display:none;max-height:260px;object-fit:cover;margin-top:1rem;border:1.5px solid var(--border2);">
+      <p id="photo-note" style="display:none;margin-top:0.5rem;font-size:0.78rem;color:var(--muted);">
+        ✅ Photo selected and ready to submit!
+      </p>
+    </div>
+
+    <!-- Pollution Details -->
+    <div class="form-card">
+      <div class="card-title"><span class="dot"></span> Pollution Details</div>
+
+      <label>Pollution Source</label>
+      <select id="pollution-type">
+        <option value="">— Select what you saw —</option>
+        <option>Factory / Industrial Smoke</option>
+        <option>Vehicle Exhaust / Traffic</option>
+        <option>Open Burning / Waste Fire</option>
+        <option>Construction Dust</option>
+        <option>Chemical / Foul Odour</option>
+        <option>Illegal Dumping</option>
+        <option>Other</option>
+      </select>
+
+      <label>Describe What You Observed</label>
+      <textarea id="description" placeholder="e.g. Black smoke from factory chimney since morning, strong smell, people coughing nearby..."></textarea>
+
+      <label>Estimated Time of Incident</label>
+      <input type="datetime-local" id="incident-time">
+
+      <label>Is this recurring?</label>
+      <select id="recurring">
+        <option value="first">First time I'm seeing this</option>
+        <option value="occasional">Happens occasionally</option>
+        <option value="daily">Happens daily / regularly</option>
+      </select>
+    </div>
+
+    <!-- Location -->
+    <div class="form-card">
+      <div class="card-title"><span class="dot"></span> Location</div>
+
+      <div class="map-placeholder" id="map-box" onclick="detectGPS()">
+        <span class="map-pin">📍</span>
+        <span id="map-text">Click to auto-detect your GPS location</span>
+        <span class="map-coords" id="map-coords"></span>
+      </div>
+
+      <label>Full Address / Landmark</label>
+      <input type="text" id="address" placeholder="e.g. Near XYZ Factory, MG Road">
+
+      <label>City</label>
+      <input type="text" id="city" placeholder="e.g. Mumbai">
+
+      <label>State</label>
+      <input type="text" id="state" placeholder="e.g. Maharashtra">
+
+      <label>PIN Code</label>
+      <input type="text" id="pincode" placeholder="e.g. 400001" maxlength="6">
+    </div>
+
+    <!-- Personal Details -->
+    <div class="form-card">
+      <div class="card-title"><span class="dot"></span> Your Details</div>
+
+      <label>Full Name</label>
+      <input type="text" id="reporter-name" placeholder="Your full name">
+
+      <label>Mobile Number</label>
+      <input type="tel" id="reporter-phone" placeholder="+91 XXXXX XXXXX">
+
+      <label>Email (Optional)</label>
+      <input type="email" id="reporter-email" placeholder="you@example.com">
+
+      <label>Aadhar Number (Optional)</label>
+      <input type="text" id="reporter-aadhar" placeholder="For verified reporting">
+    </div>
+
+    <!-- Submit + Share -->
+    <div class="form-card">
+      <div class="card-title"><span class="dot"></span> Submit Your Report</div>
+      <p style="color:var(--muted);font-size:0.85rem;line-height:1.6;margin-bottom:1rem;">
+        Your report will be sent directly to the government pollution control board.
+        An officer will review and take action. Your Citizen ID tracks your report status.
+      </p>
+      <div style="background:var(--green-pale);border:1px solid var(--border2);border-radius:8px;padding:0.75rem 1rem;font-size:0.82rem;color:var(--green-dark);margin-bottom:1rem;">
+        ℹ️ Severity level will be assigned by the government officer — not by you.
+      </div>
+
+      <button class="submit-btn" id="submit-btn" onclick="submitReport()">
+        <div class="spinner" id="submit-spinner"></div>
+        <span id="submit-text">⚡ Submit Report to Authorities</span>
+      </button>
+
+      <!-- Share Section — revealed after successful submit -->
+      <div class="share-section" id="share-section">
+        <div class="share-title">📢 Spread Awareness</div>
+        <div class="share-subtitle">
+          Your report is submitted! Share on WhatsApp to raise awareness and encourage others to report pollution too.
+        </div>
+        <div class="share-buttons">
+          <a class="whatsapp-btn" id="whatsapp-share-btn" href="#" target="_blank" rel="noopener">
+            <svg class="whatsapp-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Share on WhatsApp
+          </a>
+          <button class="copy-btn" id="copy-btn" onclick="copyReportToClipboard()">
+            📋 Copy Report
+          </button>
+        </div>
+        <div class="share-confirm" id="share-confirm"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ADMIN VIEW ═════════════════════════════════ -->
+<div class="view" id="view-admin">
+
+  <!-- Lock Screen -->
+  <div class="admin-lock" id="admin-lock">
+    <div class="lock-card">
+      <span class="lock-icon">🔐</span>
+      <h2>Government Portal</h2>
+      <p>Restricted to authorized Pollution Control Board officials only.</p>
+
+      <label>Official Email</label>
+      <input type="email" id="admin-email" placeholder="admin@vayumitra.gov.in"
+             onkeydown="if(event.key==='Enter') adminLogin()">
+
+      <label>Password</label>
+      <input type="password" id="admin-pwd" placeholder="Enter your password"
+             onkeydown="if(event.key==='Enter') adminLogin()">
+
+      <div class="error-msg" id="login-error"></div>
+
+      <button class="login-btn" id="login-btn" onclick="adminLogin()">
+        <div class="spinner" id="login-spinner"></div>
+        <span id="login-text">🔓 Access Dashboard</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="admin-content" id="admin-content">
+    <div class="admin-header">
+      <div class="admin-top">
+        <div>
+          <h1>🏛️ <em>VayuMitra</em> — Pollution Control Board</h1>
+          <p>Real-time citizen reports &nbsp;·&nbsp;
+            <span class="live-badge"><span class="live-dot"></span> Connected to Firebase</span>
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.75rem;">
+          <div class="stats-bar">
+            <div class="stat-chip total">    <span class="num" id="stat-total">0</span>    <span class="lbl">Total</span></div>
+            <div class="stat-chip pending">  <span class="num" id="stat-pending">0</span>  <span class="lbl">Pending</span></div>
+            <div class="stat-chip urgent">   <span class="num" id="stat-urgent">0</span>   <span class="lbl">Urgent</span></div>
+            <div class="stat-chip rejected"> <span class="num" id="stat-rejected">0</span> <span class="lbl">Rejected</span></div>
+          </div>
+          <button class="signout-btn" onclick="adminLogout()">🚪 Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-toolbar">
+      <input class="search-input" type="text" id="search-bar"
+             placeholder="🔍  Search by name, location, UID..."
+             oninput="renderBoard()">
+      <select class="filter-select" id="status-filter" onchange="renderBoard()">
+        <option value="">All Reports</option>
+        <option value="pending">Pending</option>
+        <option value="urgent">Urgent</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+
+    <div class="admin-board">
+      <div class="kanban-col pending-col">
+        <div class="kanban-header">
+          <div class="kanban-title"><span class="col-dot"></span> Pending</div>
+          <span class="col-count" id="cnt-pending">0</span>
+        </div>
+        <div class="kanban-body" id="body-pending"></div>
+      </div>
+      <div class="kanban-col urgent-col">
+        <div class="kanban-header">
+          <div class="kanban-title"><span class="col-dot"></span> Urgent</div>
+          <span class="col-count" id="cnt-urgent">0</span>
+        </div>
+        <div class="kanban-body" id="body-urgent"></div>
+      </div>
+      <div class="kanban-col rejected-col">
+        <div class="kanban-header">
+          <div class="kanban-title"><span class="col-dot"></span> Rejected</div>
+          <span class="col-count" id="cnt-rejected">0</span>
+        </div>
+        <div class="kanban-body" id="body-rejected"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DETAIL MODAL ───────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕ Close</button>
+    <h2 id="modal-title">Report Details</h2>
+    <div class="modal-detail" id="modal-detail"></div>
+  </div>
+</div>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script type="module" src="js/app.js"></script>
+<script type="module" src="js/share.js"></script>
+<script type="module" src="js/firebase.js"></script>
+
+</body>
+</html>
