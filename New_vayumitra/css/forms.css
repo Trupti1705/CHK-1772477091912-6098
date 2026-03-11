@@ -1,0 +1,131 @@
+/* ── VayuMitra — Forms: Fields, Labels, Upload, Buttons ────── */
+
+/* Form Fields */
+label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--green-dark);
+  margin-bottom: 0.3rem;
+  margin-top: 0.9rem;
+}
+
+label:first-of-type { margin-top: 0; }
+
+input, textarea, select {
+  width: 100%;
+  background: #f9fefb;
+  border: 1.5px solid var(--border2);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(26,140,78,0.1);
+}
+
+input:hover:not(:focus), textarea:hover:not(:focus), select:hover:not(:focus) {
+  border-color: var(--green-light);
+}
+
+textarea { resize: vertical; min-height: 80px; }
+select option { background: #fff; }
+
+/* Upload Zone */
+.upload-zone {
+  border: 2px dashed var(--border2);
+  border-radius: 10px;
+  padding: 2rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  background: var(--green-pale);
+}
+
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--green);
+  background: var(--green-mid);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+
+.upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
+.upload-zone p { color: var(--muted); font-size: 0.875rem; line-height: 1.5; }
+.upload-zone p strong { color: var(--green); }
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 14px rgba(26,140,78,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.submit-btn:hover    { background: var(--green-dark); transform: translateY(-1px); }
+.submit-btn:disabled { background: #a7f3d0; cursor: not-allowed; transform: none; }
+
+/* Login Button */
+.login-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.75rem;
+  box-shadow: 0 4px 14px rgba(26,140,78,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.login-btn:hover    { background: var(--green-dark); transform: translateY(-1px); }
+.login-btn:disabled { background: #a7f3d0; cursor: not-allowed; transform: none; }
+
+/* Spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+
+/* Error Message */
+.error-msg {
+  color: var(--red);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  display: none;
+}
